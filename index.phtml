@@ -1,0 +1,348 @@
+<?php
+session_start();
+require('db.php');
+
+//print_r($_SESSION);
+
+if(!empty($_POST['formSelect'])){
+    $_SESSION['formSelect'] = $_POST['formSelect'];
+}
+
+if(!empty($_POST['user_cart'])){
+    $_SESSION['user_cart'] = $_POST['user_cart'];
+}
+
+$tempuser = $_SESSION['user'];
+
+$yup = $_SESSION['formSelect'];
+
+$tempcart = $_SESSION['user_cart'];
+
+if($tempuser > 0){
+    if ($_POST['submit'] || $_POST['type'] == 'add') {
+
+        $tempfile = $_POST['fileid'];
+        $tempqual = $_POST['quantity'];
+
+        $sqll = "SELECT id,price FROM Images WHERE id = '$tempfile'";
+        $resultt = mysqli_query($connect, $sqll);
+
+        while ($row = mysqli_fetch_row($resultt)) {
+            $itemid = $row[0];
+            $itemprice = $row[1];
+
+            $_SESSION['user_cart'] = $itemid;
+
+            $tempcart = $_SESSION['user_cart'];
+
+           if(!isset($_SESSION['cart_items'])){
+               $_SESSION['cart_items'] = array();
+           }
+
+            if(array_key_exists($tempfile,$_SESSION['cart_items'])){
+                echo "<br><b><p style='text-align: center;'>Item is already in cart</p></b>";
+            }
+            else {
+                $_SESSION['cart_items'][$itemid]=$itemid;
+                echo "<br><b><p style='text-align: center;'>Item has been added to your cart</p></b>";
+            }
+        }//while end
+    }
+    else {
+        echo "";
+    }
+}
+else {
+        if ($_POST['submit'] || $_POST['type'] == 'add') {
+            echo "<br><br><br><b><p style='text-align: center;'>Please log in first</p></b>";
+        }
+    }
+?>
+<html>
+<head>
+<style>
+
+
+#circle
+{
+border-radius:50% 50% 50% 50%;  
+
+width:75px;
+height:75px;
+}
+
+/* unvisited link */
+a:link {
+    color: blue;
+}
+
+/* visited link */
+a:visited {
+    color: red;
+}
+
+/* mouse over link */
+a:hover {
+    color: green;
+}
+
+/* selected link */
+a:active {
+    color: black;
+}
+
+.right {
+    text-align: right;
+    float: right;
+} 
+
+ul.rig {
+	list-style: none;
+	font-size: 0px;
+	margin-left: -2.5%; /* should match li left margin */
+}
+
+ul.rig li {
+	display: inline-block;
+	padding: 10px;
+	margin: 0 0 2.5% 2.5%;
+	background: #fff;
+	font-size: 16px;
+	font-size: 1rem;
+	vertical-align: top;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+
+ul.rig li img {
+	max-width: 100%;
+	height: auto;
+	margin: 0 0 10px;
+}
+
+/* class for 3 columns */
+ul.rig.columns-3 li {
+	width: 30.83%; /* this value + 2.5 should = 33% */
+}
+ 
+@media (max-width: 480px) {
+	ul.grid-nav li {
+		display: block;
+		margin: 0 0 5px;
+	}
+	ul.grid-nav li a {
+		display: block;
+	}
+	ul.rig {
+		margin-left: 0;
+	}
+	ul.rig li {
+		width: 100% !important; /* over-ride all li styles */
+		margin: 0 0 20px;
+	}
+}
+
+</style>
+
+<style type='text/css'>
+
+a {
+    display: inline-block;
+    overflow: hidden;
+    position: relative;
+}
+
+a .play {
+    display: none;
+    background:url(http://goo.gl/yJqCOR) no-repeat center center;
+    opacity: 0.8;
+    position: absolute;
+    width: 200px;
+    height: 104px;
+    color: #66FF00;
+}
+
+a:hover .play { 
+	display: block; 
+ }
+
+</style>
+
+</head>
+<body>
+
+<DIV STYLE = "POSITION: absolute; TOP: 10px; LEFT: 60px">
+ <a target="_blank" href="https://instagram.com/"><img src="http://img1.wikia.nocookie.net/__cb20130504152420/logopedia/images/9/96/Instagram.svg" alt="Klematis" width="130" height="35" align="left"></a>
+</div>
+
+<?php
+
+$temp = $_SESSION['user'];
+
+$items = count($_SESSION['cart_items']);
+
+if($temp > 0){
+	echo "<div class='right'>";
+	echo "<a href='https://instagram.com/download/' style='text-decoration:none;'>Get the app &nbsp;&nbsp;</a>";
+
+    if($items > 0 && $temp > 0)
+    {
+        $itemcart = count($_SESSION['cart_items']);
+        echo "<a href='/cart.php' style='text-decoration:none;'><b>Cart ($itemcart)</b> &nbsp;&nbsp;</a>";
+    }
+	echo "<a href='logout.php' style='text-decoration:none;'>Log Out</a>";   
+	echo "<br><a target='_blank' href='upload.php'><img src='http://uploadvr.com/wp-content/uploads/2015/03/upload-logo-01.png' width='130' height='35' align='right'></a>";
+
+	echo "</div>";
+}
+
+else{
+	echo "<div class='right'>";
+	echo "<a href='https://instagram.com/download/' style='text-decoration:none;'>Get the app &nbsp;&nbsp;&nbsp;&nbsp;</a>";
+	echo "<a href='login.php' style='text-decoration:none;'>Log in</a>";
+	echo "</div>";
+}
+
+?>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<DIV STYLE = "POSITION: absolute; TOP: 70px; LEFT: 190px"><img src="http://i277.photobucket.com/albums/kk72/PineyHillsMusic/SOLD%20ITEMS/DSCF1362.jpg" id="circle"></div>
+<DIV STYLE = "POSITION: absolute; TOP: 55px; LEFT: 470px"><p><h9>Peter X</h9></p></div>
+<DIV STYLE = "POSITION: absolute; TOP: 55px; LEFT: 530px"><img src="http://www.digibuzzme.com/wp-content/uploads/2013/05/check-mark.jpg" height = "40" width = "45"></div>
+<DIV STYLE = "POSITION: absolute; TOP: 50px; LEFT: 570px"><img src="http://isbfirst.informationsecur.netdna-cdn.com/securitybuzz/wp-content/uploads/is25.png" height="42" width="42"></div>
+<DIV STYLE = "POSITION: absolute; TOP: 105px; LEFT: 470px"><h9><b>PeterXay</h9></b></div>
+
+<DIV STYLE = "POSITION: absolute; TOP: 105px; LEFT: 590px">
+<a href="https://www.yahoo.com" style="text-decoration:none;"><b>twitter.com/PeterX</b></a>
+</DIV>
+
+<form action='index.phtml' method='POST'>
+<select name="formSelect" onchange="this.form.submit();">
+    <option value="Blank" <?php if ($_SESSION['formSelect'] == '') echo 'selected="selected"'; ?> >Sort By:</option>
+    <option value="Date" <?php if ($_SESSION['formSelect'] == 'Date') echo 'selected="selected"'; ?> >Date</option>
+    <option value="Name" <?php if ($_SESSION['formSelect'] == 'Name') echo 'selected="selected"'; ?> >Name</option>
+</select>
+</form>
+
+
+<br>
+
+<ul class="rig columns-3">
+
+<?php
+//session_start();
+require('db.php');
+
+$sdate = $_POST['formSelect'];
+
+//echo "**$sdate**";
+global $sdate;
+
+$folder = 'uploads/';
+$filetype = '*.*';
+
+if($sdate =='Name'){
+	$files = glob($folder.$filetype);
+} //end if
+
+$count = count($files);
+
+$test = str_replace('uploads/', "",$files[0]);
+
+//Sort by file name
+if($sdate == 'Name' || $_SESSION['formSelect'] == 'Name') {
+
+    $sql2 = "SELECT filename, message, price, id FROM Images ORDER BY filename ASC";
+    $result2 = mysqli_query($connect, $sql2);
+
+    while ($row2 = mysqli_fetch_row($result2)) {
+        $filename = $row2[0];
+        $filemessage = $row2[1];
+        $fileprice = $row2[2];
+        $fileid = $row2[3];
+        echo "<li>";
+        echo "<a href=''><div class='play'><b><center><font size='4'>$filemessage</font></center></b></div>";
+        echo "<img src='uploads/$filename' />";
+        echo "</a>";
+        $cartstored = "click" . "$filename";
+        echo "<b>$fileprice</b>";
+
+        echo "<form action='' method='POST' name='addcartform' id='addcartform'>";
+
+        echo "<input type='hidden' name ='type' value='add' />";
+        echo "<input type='hidden' name ='fileid' value='$fileid' />";
+        echo "<div><input type='text' name='quantity' value='1' size='2' /><button type='submit' class='add_to_cart'>Add to Cart</button></button></div>";
+        echo "</form>";
+
+        echo "</li>";
+    }
+}//end if sort by name
+
+//Sort by file date uploaded
+else if($sdate == 'Date' || $_SESSION['formSelect'] == 'Date'){
+
+    $sql2 = "SELECT filename, message, price, id FROM Images ORDER BY date ASC";
+    $result2 = mysqli_query($connect, $sql2);
+
+    while ($row2 = mysqli_fetch_row($result2)) {
+        $filename = $row2[0];
+        $filemessage = $row2[1];
+        $fileprice = $row2[2];
+        $fileid = $row2[3];
+        echo "<li>";
+        echo "<a href=''><div class='play'><b><center><font size='4'>$filemessage</font></center></b></div>";
+        echo "<img src='uploads/$filename' />";
+        echo "</a>";
+        $cartstored = "click" . "$filename";
+        echo "<b>$fileprice</b>";
+
+        echo "<form action='' method='POST' name='addcartform' id='addcartform'>";
+        echo "<input type='hidden' name ='type' value='add' />";
+        echo "<input type='hidden' name ='fileid' value='$fileid' />";
+        echo "<div><input type='text' name='quantity' value='1' size='2' /><button type='submit' class='add_to_cart'>Add to Cart</button></button></div>";
+        echo "</form>";
+
+        echo "</li>";
+    } //end while
+} //end if for sort by date
+
+else if($sdate == 'Blank' || $_SESSION['formSelect'] == 'Blank' || empty($sdate) || $_SESSION['formSelect'] == ''){
+    $sql2 = "SELECT filename, message, price, id FROM Images ORDER BY id ASC";
+    $result2 = mysqli_query($connect, $sql2);
+
+    while ($row2 = mysqli_fetch_row($result2)) {
+        $filename = $row2[0];
+        $filemessage = $row2[1];
+        $fileprice = $row2[2];
+        $fileid = $row2[3];
+        echo "<li>";
+        echo "<a href=''><div class='play'><b><center><font size='4'>$filemessage</font></center></b></div>";
+        echo "<img src='uploads/$filename' />";
+        echo "</a>";
+        $cartstored = "click" . "$filename";
+        echo "<b>$fileprice</b>";
+
+        echo "<form action='' method='POST' name='addcartform' id='addcartform'>";
+        echo "<input type='hidden' name ='type' value='add' />";
+        echo "<input type='hidden' name ='fileid' value='$fileid' />";
+        echo "<div><input type='text' name='quantity' value='1' size='2' /><button type='submit' class='add_to_cart'>Add to Cart</button></button></div>";
+        echo "</form>";
+
+        echo "</li>";
+    } //end while
+}
+
+else {
+    echo "";
+}
+
+?>
+
+</ul>
+
+</body>
+</html>

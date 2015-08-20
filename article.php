@@ -76,14 +76,7 @@
     $('.months').click(function() {
         $(this).find('ul').slideToggle();
     });
-
-    $('.post').click();
-
-    var slctt=document.getElementById("ddlTestSelect");
-    slctt.size=slctt.options.length;if(slctt.options.length>1)slctt.style.width='470px';
-
-
-
+    
 </script>
 
 </head>
