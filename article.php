@@ -138,6 +138,10 @@ else {
     echo "</h>";
 }
 
+echo "<div style='text-align:right'>";
+echo "<a href='http://45.55.3.245/addpost.php' STYLE='text-decoration: none'><b> Add new Article or Post</b></a>";
+echo "</div>";
+
 ?>
 
 </body>
