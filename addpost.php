@@ -1,37 +1,54 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Peter
- * Date: 8/27/2015
- * Time: 11:41 AM
- */
 require('db.php');
 
-echo "<h1><b>Adding new Article or Post</b></h1><br>";
+?>
 
-echo "<b>Article</b><br>";
+<html>
+<head>
 
-echo "<form id='blogpost' action='' method='post' accept-charset='UTF-8'>";
-echo "<select name='article'>";
+    <link rel="stylesheet" type="text/css" href="meltdown/css/meltdown.css">
 
-$sql = "SELECT name FROM Article WHERE parent = '0'";
-$result = mysqli_query($connect, $sql);
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
-while($row = mysqli_fetch_row($result)) {
+    <script src="meltdown/js/jquery.meltdown.js"></script>
 
-    $count += count($row[0]);
-    echo "<option value='$row[0]'>$row[0]</option>";
-}
+    <script src="meltdown/js/lib/element_resize_detection.js"></script>
+    <script src="meltdown/js/lib/js-markdown-extra.js"></script>
+    <script src="meltdown/js/lib/rangyinputs-jquery.min.js"></script>
 
-echo "<option value='new'>New Article</option>";
+</head>
+<body>
 
-echo "</select>";
+<h1><b>Adding new Article or Post</b></h1><br>
+<b>Article</b><br>
+<form id='blogpost' action='' method='post' accept-charset='UTF-8'>
+    <select name='article'">
+        <?php
+            $sql = "SELECT id, name FROM Article WHERE parent = '0'";
+            $result = mysqli_query($connect, $sql);
 
-echo "<br><br><br><b>New Post: </b><br>";
+            while($row = mysqli_fetch_assoc($result)) {
 
-echo "<input type='text' name='article_post'><br/>";
-echo "<br></br><input type='submit' name='Submit' value='Submit' />";
-echo "</form>";
+                $count += count($row[0]);
+                echo "<option value='{$row['id']}'>{$row['name']}</option>";
+            }
+        ?>
+        <option value='new'>New Article</option>
+    </select>
+
+    <br>
+
+    <input type="text" name="article_name" placeholder="Enter article name" />
+
+    <br><br><br><b>New Post: </b><br>
+
+    <textarea name = 'article_post' cols='50' rows='20' class='meltdown'></textarea>
+    <br></br><input type='submit' name='Submit' value='Submit' />
+    <br></br><input type='submit' name='Preview' value='Preview' />
+</form>
+
+
+<?php
 
 $sql5 = "SELECT id FROM Article";
 $result5 = mysqli_query($connect, $sql5);
@@ -41,29 +58,26 @@ while($row5 = mysqli_fetch_row($result5)) {
     $countid += count($row5[0]);
 }
 
-$temp = $_POST['article'];
-$temp2 = $_POST['article_post'];
+$article_id = $_POST['article'];
+$article_post = $_POST['article_post'];
+$article_name = $_POST['article_name'];
+
 
 if($_POST['Submit']) {
-    $sql2 = "SELECT id FROM Article WHERE parent != '0'";
-    $result2 = mysqli_query($connect, $sql2);
-    while ($row2 = mysqli_fetch_row($result2)) {
 
-        //echo "$row2[0]";
-        $count2 += count($row2[0]);
-    }
+    if($article_id == 'new'){
+        $sql3 = "INSERT INTO Article (parent, name, message, date) VALUES ('0', '$article_name', '$article_post', now())";
+        mysqli_query($connect, $sql3);
+        $parentid = mysqli_insert_id($connect);
 
-    $new_article = $count + 1;
-    $new_post = $count2 + 1;
-    $new_row = $countid + 1;
+        //$sql4 = "INSERT INTO Article (parent, name, message, date) VALUES ('$parentid', 'Post $new_post', '$article_post', now())";
+        //mysqli_query($connect, $sql4);
 
-    if($temp == 'new'){
-        $sql3 = "INSERT INTO Article (parent, name, date) VALUES ('0', 'Article $new_article', now())";
-        $sql4 = "INSERT INTO Article (parent, name, message, date) VALUES ('$new_row', 'Post $new_post', '$temp2', now())";
+        //$postid = mysqli_insert_id($connect);
 
-        if (mysqli_query($connect, $sql3) && mysqli_query($connect, $sql4)) {
+        if ($parentid) {
             echo "Your Article and Post has been created successfully";
-            header( 'refresh:3;url=http://45.55.3.245/article.php');
+            //header( 'refresh:3;url=http://45.55.3.245/article.php');
         }
 
         else {
@@ -73,25 +87,35 @@ if($_POST['Submit']) {
     }
 
     else{
-        $sql6 = "SELECT id FROM Article WHERE name = '$temp'";
-        $result6 = mysqli_query($connect, $sql6);
-        $row6 = mysqli_fetch_row($result6);
-
-        $articleid = $row6[0];
-
-        $sql7 = "INSERT INTO Article (parent, name, message, date) VALUES ('$articleid', 'Post $new_post', '$temp2', now())";
-        $sql8 = "UPDATE Article SET date = now() WHERE id = '$articleid'";
+        $sql7 = "INSERT INTO Article (parent, name, message, date) VALUES ('$article_id', '$article_name', '$article_post', now())";
+        $sql8 = "UPDATE Article SET date = now() WHERE id = '$article_id'";
 
         if (mysqli_query($connect, $sql7) && mysqli_query($connect, $sql8)) {
             echo "Your post been added successfully";
-            header( 'refresh:3;url=http://45.55.3.245/article.php');
+            //header( 'refresh:3;url=http://45.55.3.245/article.php');
         }
 
         else {
             echo "Error: " . $query . "<br>" . mysqli_error($connect);
         }
     }
-
 }
 
+if($_POST['Preview'])
+{
+    echo "Test";
+}
+
+
 ?>
+
+<script>
+
+    $(document).ready( function() {
+        $('textarea').meltdown();
+    });
+</script>
+</body>
+</html>
+
+

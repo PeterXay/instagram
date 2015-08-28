@@ -53,10 +53,10 @@ while ($row = mysqli_fetch_row($result)) {
     $name = $row[1];
     $message = $row[2];
 
-    echo "<tr><td valign='center'><li class='article'><b>$name</b>";
+    echo "<tr><td valign='center'><li class='article'><a href='/article.php?id=$id'><b>$name</b></a>";
     echo "<ul class='archive_posts'>";
 
-    $sql2 = "SELECT id, name, message, date, parent FROM Article WHERE parent = '$id' ORDER BY date DESC";
+    $sql2 = "SELECT id, name, message, date, parent FROM Article WHERE parent = '$id' ORDER BY date ASC";
     $result2 = mysqli_query($connect, $sql2);
 
     while ($row2 = mysqli_fetch_row($result2)) {
@@ -67,10 +67,10 @@ while ($row = mysqli_fetch_row($result)) {
 
         echo "<form action='' method='post'>";
         if($post == $_GET['post']){
-            echo "<li class='post'><a href='http://45.55.3.245/article.php?post=$post' STYLE='text-decoration: none'><b><h3>$post *</h3></b></a></li>";
+            echo "<li class='post'><a href='/article.php?id=$id#$row2[0]' STYLE='text-decoration: none'><b><h3>$post *</h3></b></a></li>";
         }
         else {
-            echo "<li class='post'><a href='http://45.55.3.245/article.php?post=$post' STYLE='text-decoration: none'>$post</a></li>";
+            echo "<li class='post'><a href='/article.php?id=$id#$row2[0]' STYLE='text-decoration: none'>$post</a></li>";
         }
         echo "</form>";
     }
@@ -82,28 +82,46 @@ echo "</ul>";
 
 echo "</table>";
 
-$temp = $_GET['post'];
+$id= $_GET['id'];
 
-if(!empty($temp)){
+if(!empty($id)){
 
     echo "<h class='pos_left'>";
 
-    $sql = "SELECT parent,name, message FROM Article WHERE name = '$temp'";
+    $sql = "SELECT parent,name, message, id FROM Article WHERE id = '$id'";
     $result = mysqli_query($connect, $sql);
 
     $row = mysqli_fetch_row($result);;
 
-    $parent = $row[0];
+    $parent = ( !empty($row[0]) )? $row[0] : $id;
+    $m_id = $row[3];
     $name = $row[1];
     $message = $row[2];
 
-    $sql2 = "SELECT name FROM Article WHERE id = '$parent'";
+    $sql2 = "SELECT name, message, id FROM Article WHERE parent = '$id'";
     $result2 = mysqli_query($connect, $sql2);
 
-    $row2 = mysqli_fetch_row($result2);
+    //$row2 = mysqli_fetch_row($result2);
 
-    echo "<h1>$row2[0]</h1>";
-    echo "<h3>$name</h3>$message";
+    echo "<div style='padding:10px; margin-bottom:5px;' id ='$m_id'>";
+
+    echo "<h1>$name</h1>";
+    echo "$message";
+    echo "</div>";
+
+    while($row2 = mysqli_fetch_row($result2)) {
+
+        $c_id = $row2[2];
+
+        global $c_id;
+
+        echo "<div style='padding:10px; margin-bottom:5px;' id='$c_id'>";
+        echo "<h2>$row2[0]</h2> $row2[1]";
+        echo "</div>";
+        //echo "<h1>$row2[0]</h1>";
+        //echo "<h3>$name</h3>$message";
+
+    }
 
     echo "</h>";
 
@@ -149,11 +167,15 @@ echo "</div>";
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script>
 
+    var container = $('div'),
+        scrollTo = $('$c_id');
+
+    /*
     $('.archive_article ul').hide();
 
     $('.article').click(function() {
         $(this).find('ul').slideToggle();
-    });
+    });*/
 
 </script>
 
