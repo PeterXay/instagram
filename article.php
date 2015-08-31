@@ -61,7 +61,6 @@ require('db.php');
             $result2 = mysqli_query($connect, $sql2);
 
             while ($row2 = mysqli_fetch_row($result2)) {
-                $parentid = $row2[5];
                 $post = $row2[1];
 
                 echo "<form action='' method='post'>";
@@ -131,7 +130,7 @@ require('db.php');
             $parent_id = $row3[1];
             $article_name = $row3[2];
 
-            echo "<h1>$name</h1>";
+            echo "<h1>$article_name</h1>";
 
             $sql4 = "SELECT id, parent, name, message FROM Article WHERE parent = '$main_id' ORDER BY date DESC";
             $result4 = mysqli_query($connect, $sql4);
